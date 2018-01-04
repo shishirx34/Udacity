@@ -15,9 +15,9 @@ documents = ['Hello, how are you!',
 # Build the token words
 token_words = []
 for index in documents:
-    token_words.append(index.lower().translate(string.maketrans('', ''), string.punctuation).split(' '))
+    token_words.append(index.lower().translate(str.maketrans('', '', string.punctuation)).split(' '))
 
-print token_words
+print(token_words)
 
 # Build the counter of the token words
 frequency_list = []
@@ -31,5 +31,5 @@ pprint.pprint(frequency_list)
 count_vector.fit(documents)
 docarray = count_vector.transform(documents).toarray()
 
-frequency_matrix = pd.Dataframe(docarray, columns = count_vector.get_feature_names())
-print frequency_matrix
+frequency_matrix = pd.DataFrame(docarray, columns = count_vector.get_feature_names())
+print(frequency_matrix)

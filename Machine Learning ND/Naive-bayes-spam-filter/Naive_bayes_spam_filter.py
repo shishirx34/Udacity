@@ -2,7 +2,7 @@
 
 import pandas as pd
 
-df = pd.read_table('../dataset/smsspamcollection/SMSSpamCollection',
+df = pd.read_table('./dataset/SMSSpamCollection',
     sep = '\t',
     header = None,
     names = ['label', 'message'])
