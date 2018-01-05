@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>b36c855a-6dde-416c-b719-9083f4c5a5f7</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>utils\bag-of-words.py</StartupFile>
+    <StartupFile>Naive_bayes_spam_filter.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
