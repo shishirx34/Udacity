@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Naive-bayes-spam-filter", "Naive-bayes-spam-filter\Naive-bayes-spam-filter.pyproj", "{B36C855A-6DDE-416C-B719-9083F4C5A5F7}"
 EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "titanic_survival_exploration", "titanic_survival_exploration\titanic_survival_exploration.pyproj", "{37523EC7-7FF1-42A8-8DB4-5A1A756D417A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,8 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{B36C855A-6DDE-416C-B719-9083F4C5A5F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B36C855A-6DDE-416C-B719-9083F4C5A5F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37523EC7-7FF1-42A8-8DB4-5A1A756D417A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37523EC7-7FF1-42A8-8DB4-5A1A756D417A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

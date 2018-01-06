@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>b36c855a-6dde-416c-b719-9083f4c5a5f7</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Naive_bayes_spam_filter.py</StartupFile>
+    <StartupFile>src\Naive_bayes_spam_filter.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -21,8 +21,8 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="utils\bag-of-words.py" />
-    <Compile Include="Naive_bayes_spam_filter.py" />
+    <Compile Include="src\Naive_bayes_spam_filter.py" />
+    <Compile Include="src\utils\bag-of-words.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="dataset\readme" />
@@ -30,7 +30,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="dataset\" />
-    <Folder Include="utils\" />
+    <Folder Include="src\" />
+    <Folder Include="E:\Udacity\Machine Learning Engineer Nanodegree\Naive-bayes-spam-filter\src\utils\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
