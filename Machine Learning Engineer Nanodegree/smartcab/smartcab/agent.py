@@ -100,7 +100,7 @@ class LearningAgent(Agent):
 
         # Set the agent state and default action
         self.state = state
-        self.next_waypoint = self.planner.next_waypoint()
+        self.next_waypoint = self.planner.next_waypoint()            
         action = None
 
         ########### 
@@ -110,6 +110,15 @@ class LearningAgent(Agent):
         # When learning, choose a random action with 'epsilon' probability
         # Otherwise, choose an action with the highest Q-value for the current state
         # Be sure that when choosing an action with highest Q-value that you randomly select between actions that "tie".
+
+        # Select a random number between 0.0 and 1.0, if this number is less than epsilon, 
+        # we choose a random action to execute, or else choose from the Q-learning.
+        random_number = random.random()
+        if not self.learning or random_number < self.epsilon:
+            action = random.choice(self.valid_actions)
+        else: 
+            action = get_maxQ(self, state)
+
         return action
 
 
@@ -165,7 +174,7 @@ def run():
     # Follow the driving agent
     # Flags:
     #   enforce_deadline - set to True to enforce a deadline metric
-    env.set_primary_agent(agent)
+    env.set_primary_agent(agent, enforce_deadline=True)
 
     ##############
     # Create the simulation
@@ -181,7 +190,7 @@ def run():
     # Flags:
     #   tolerance  - epsilon tolerance before beginning testing, default is 0.05 
     #   n_test     - discrete number of testing trials to perform, default is 0
-    sim.run()
+    sim.run(n_test=10)
 
 
 if __name__ == '__main__':
