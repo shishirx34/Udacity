@@ -12,7 +12,6 @@ class Config:
 
     @staticmethod 
     def GetConfig():
-        """ Static access method. """
         if Config.__instance == None:
             with open(configFilePath) as file:
                 configFileContent = json.load(file)
@@ -20,7 +19,6 @@ class Config:
         return Config.__instance
 
     def __init__(self, DataFolderPath, *args, **kwargs):
-        """ Virtually private constructor. """
         if Config.__instance != None:
             raise Exception("This class is a singleton!")
         else:
