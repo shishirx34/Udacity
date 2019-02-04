@@ -18,9 +18,22 @@ class Config:
                 Config(**configFileContent)
         return Config.__instance
 
-    def __init__(self, DataFolderPath, *args, **kwargs):
-        if Config.__instance != None:
-            raise Exception("This class is a singleton!")
-        else:
-            self.DataFolderPath = DataFolderPath
-            Config.__instance = self
+    def __init__(self,
+        DataFolderPath, 
+        TrainBatchSize,
+        ValidationBatchSize,
+        TestBatchSize,
+        ImageSizeWidth,
+        ImageSizeHeight,
+        *args, 
+        **kwargs):
+            if Config.__instance != None:
+                raise Exception("This class is a singleton!")
+            else:
+                self.DataFolderPath = DataFolderPath
+                self.TrainBatchSize = TrainBatchSize
+                self.ValidationBatchSize = ValidationBatchSize
+                self.TestBatchSize = TestBatchSize
+                self.ImageSizeWidth = ImageSizeWidth
+                self.ImageSizeHeight = ImageSizeHeight
+                Config.__instance = self

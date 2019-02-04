@@ -2,9 +2,9 @@ from keras.preprocessing.image import ImageDataGenerator
 import numpy as np 
 from Configurations.Config import Config
 
-IMAGE_SIZE = (512, 512)
-
 config = Config.GetConfig()
+
+IMAGE_SIZE = (config.ImageSizeWidth, config.ImageSizeHeight)
 
 image_data_generator = ImageDataGenerator(
     samplewise_center=True, 

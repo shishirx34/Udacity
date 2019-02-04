@@ -6,6 +6,8 @@ import os
 from definitions import ROOT_DIR
 from Utilities.MeasureDuration import MeasureDuration
 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
 SAVED_MODELS_FOLDER = os.path.join(ROOT_DIR, "Generated", "saved-models")
 
 loaded_data = Loader.PreProcess()
@@ -20,6 +22,7 @@ model.add(Dense(512, input_shape=train_X.shape[1:], activation='relu'))
 model.add(Dropout(0.2))
 model.add(Dense(512, activation='relu'))
 model.add(Dropout(0.4))
+model.add(Flatten())
 model.add(Dense(len(loaded_data.prediction_labels), activation='softmax'))
 model.summary()
 

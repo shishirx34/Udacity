@@ -110,21 +110,21 @@ class Loader:
                         train_xray_df,
                         path_column='Image Path',
                         prediction_column='Disease Prediction',
-                        batch_size=40
+                        batch_size=config.TrainBatchSize
                   )
 
                   val_gen_df = Load_Data_Images_For_DataFrame(
                         val_xray_df,
                         path_column='Image Path',
                         prediction_column='Disease Prediction',
-                        batch_size=200
+                        batch_size=config.ValidationBatchSize
                   )
 
                   test_gen_df = Load_Data_Images_For_DataFrame(
                         test_xray_df,
                         path_column='Image Path',
                         prediction_column='Disease Prediction',
-                        batch_size=1000
+                        batch_size=config.TestBatchSize
                   )
 
             print ("Data load complete!")

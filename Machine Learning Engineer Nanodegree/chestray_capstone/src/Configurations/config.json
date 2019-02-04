@@ -1,3 +1,8 @@
 {
-    "DataFolderPath": "E:\\ChestXRayData\\data"
+    "DataFolderPath": "E:\\ChestXRayData\\data",
+    "TrainBatchSize": 10,
+    "ValidationBatchSize": 200,
+    "TestBatchSize": 1000,
+    "ImageSizeWidth": 256,
+    "ImageSizeHeight": 256
 }
