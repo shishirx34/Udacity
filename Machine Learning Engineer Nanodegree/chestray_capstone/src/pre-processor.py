@@ -49,7 +49,8 @@ xray_df = xray_df[['Image Index', 'Finding Labels', 'Patient ID', 'Image Path']]
 
 #Co-relate all disease labels with data => adding probability of 1.0 for disease labels
 for label in disease_labels:
-    xray_df[label] = xray_df['Finding Labels'].apply(lambda x: 1.0 if label in x else 0.0)
+    xray_df[label] = xray_df['Finding Labels'].apply(lambda x: 1.0 if label in x else 0)
+#print(xray_df.sample(10))
 
 print('Disease Labels distribution ({})'.format(len(disease_labels)), 
       [(label,int(xray_df[label].sum())) for label in disease_labels])
@@ -73,7 +74,7 @@ print("Dataset shape after sampling:", xray_df.shape)
 # Create disease prediction matrix from all the disease labels we have
 with MeasureDuration() as m:
       print("Generating disease prediction vector...")
-      xray_df['Disease Prediction'] = xray_df.apply(lambda x: [x[disease_labels].values], 1).map(lambda x: x[0])
+      xray_df['Disease Prediction'] = xray_df.apply(lambda x: [x[disease_labels].values], 1).map(lambda x: x[0]).apply(pd.to_numeric, errors='coerce')
       #print(xray_df.sample(10))
 
 # Split the data into Training set and Testing set.
@@ -110,4 +111,16 @@ with MeasureDuration() as m:
             batch_size=1000
       )
 
-print("Data load complete!")
+print ("Data load complete!")
+
+def sample_plot(tx, ty, predict_labels):
+      fig, m_axs = plt.subplots(4, 4, figsize = (16, 16))
+      for (c_x, c_y, c_ax) in zip(tx, ty, m_axs.flatten()):
+            c_ax.imshow(c_x[:,:,0], cmap = 'bone', vmin = -1.5, vmax = 1.5)
+            c_ax.set_title(', '.join([n_class for n_class, n_score in zip(predict_labels, c_y) if n_score > 0.5]))
+            c_ax.axis('off')
+
+# Generate sample plot of training images and disease predictions
+t_x, t_y = next(train_gen_df)
+sample_plot(t_x, t_y, disease_labels)
+plt.savefig(os.path.join(OUTPUT_GENERATED_IMAGES_FOLDER, "sampled_loaded_training_set.jpg"))

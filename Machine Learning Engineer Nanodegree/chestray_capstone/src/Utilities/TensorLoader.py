@@ -1,11 +1,14 @@
 from keras.preprocessing.image import ImageDataGenerator
 import numpy as np 
-from PIL import Image 
-import os
+from Configurations.Config import Config
 
 IMAGE_SIZE = (512, 512)
 
+config = Config.GetConfig()
+
 image_data_generator = ImageDataGenerator(
+    samplewise_center=True, 
+    samplewise_std_normalization=True,
     rotation_range = 4,             # minor rotation twists
     width_shift_range = 0.1,
     height_shift_range = 0.1,
@@ -17,17 +20,16 @@ image_data_generator = ImageDataGenerator(
 )
 
 def Load_Data_Images_For_DataFrame(input_df, path_column, prediction_column, batch_size):
-    directory = "E:\\ChestXRayData\\data\\" # os.path.dirname(input_df[path_column].values[0])
-    print("Directory: ", directory, " Loading: ", batch_size)
+    directory = config.DataFolderPath
     generated_df = image_data_generator.flow_from_directory(directory,
         class_mode='sparse',
-        batch_size = batch_size,
         target_size = IMAGE_SIZE,
-        color_mode = 'grayscale')
+        color_mode = 'grayscale',
+        batch_size = batch_size)
     generated_df.classes = np.stack(input_df[prediction_column].values)
     generated_df.samples = input_df.shape[0]
     generated_df.n = input_df.shape[0]
     generated_df._set_index_array()
-    generated_df.directory = ''
+    generated_df.directory = directory
     print("Generated data frame with loaded images: ", input_df.shape[0])
     return generated_df
