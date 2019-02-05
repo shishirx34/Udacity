@@ -3,6 +3,6 @@
     "TrainBatchSize": 10,
     "ValidationBatchSize": 200,
     "TestBatchSize": 1000,
-    "ImageSizeWidth": 256,
-    "ImageSizeHeight": 256
+    "ImageSizeWidth": 128,
+    "ImageSizeHeight": 128
 }
