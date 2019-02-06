@@ -26,9 +26,9 @@ def TrainChestR(model,
     train_X,
     val_gen,
     attempt, 
-    epochs)
+    epochs):
     with MeasureDuration() as m:
-        print ("Started training ChestR InceptionV3 CNN model - {} layer...").format(training_layer)
+        print ("Started training ChestR InceptionV3 CNN model - {} layer...".format(training_layer))
         best_model_file_path = os.path.join(definitions.SAVED_MODELS_FOLDER, "chestr-transfer-cnn-model.weights.layer{}.att{}.epochs{}.best.hdf5".format(training_layer, attempt, epochs))
         checkpointer = ModelCheckpoint(
             best_model_file_path,
@@ -56,11 +56,15 @@ epochs = int(sys.argv[1])
 
 print ("Training model for {} epochs..".format(epochs))
 
-loaded_data = Loader.PreProcess()
+# InceptionV3 needs image to have 3 channels i.e. RGB channel, since our images are in 
+# grayscale this won't work but our ImageDataGenerator can load the images in 'rgb' that could help
+
+loaded_data = Loader.PreProcess(mode='rgb')
 
 train_X, train_Y = next(loaded_data.train_generator)
 print (train_X.shape)
 print (train_Y.shape)
+
 '''
 Attempt 1: with 128,128 Image size and InceptionV3 ImageNet model transfer learning
 '''
@@ -76,7 +80,7 @@ x = GlobalAveragePooling2D()(x)
 # let's add a fully-connected layer
 x = Dense(1024, activation='relu')(x)
 # and a logistic layer -- let's say we have 200 classes
-predictions = Dense(Dense(len(loaded_data.prediction_labels), activation='softmax'), activation='softmax')(x)
+predictions = Dense(len(loaded_data.prediction_labels), activation='softmax')(x)
 
 # this is the model we will train
 chestr_transfer_cnn_model = Model(inputs=base_model.input, outputs=predictions)
@@ -96,7 +100,7 @@ TrainChestR(model = chestr_transfer_cnn_model,
     training_layer = "top", 
     train_gen = loaded_data.train_generator,
     train_X = train_X,
-    val_gen = loaded_data.validation_generator,
+    val_gen = loaded_data.val_generator,
     attempt = attempt, 
     epochs = epochs)
 
@@ -126,7 +130,7 @@ TrainChestR(model = chestr_transfer_cnn_model,
     training_layer = "bottom", 
     train_gen = loaded_data.train_generator,
     train_X = train_X,
-    val_gen = loaded_data.validation_generator,
+    val_gen = loaded_data.val_generator,
     attempt = attempt, 
     epochs = epochs)
 

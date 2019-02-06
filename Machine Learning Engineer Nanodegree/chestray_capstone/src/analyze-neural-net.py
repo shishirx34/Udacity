@@ -29,12 +29,18 @@ epochs = sys.argv[1]
 filters = sys.argv[2]
 best_model_file_path = os.path.join(definitions.SAVED_MODELS_FOLDER, "chestr-cnn-model.weights.filters{}.epochs{}.best.hdf5".format(filters, epochs))
 model_testdata_file_path = os.path.join(definitions.SAVED_MODELS_FOLDER, "chestr-cnn-model.testdata.filters{}.epochs{}.npz".format(filters, epochs))
-'''
 
 epochs = sys.argv[1]
 attempt = 2
 best_model_file_path = os.path.join(definitions.SAVED_MODELS_FOLDER, "chestr-cnn-model.weights.att{}.epochs{}.best.hdf5".format(attempt, epochs))
 model_testdata_file_path = os.path.join(definitions.SAVED_MODELS_FOLDER, "chestr-cnn-model.testdata.att{}.epochs{}.npz".format(attempt, epochs))
+
+'''
+epochs = sys.argv[1]
+layer = sys.argv[2]
+attempt = 1
+best_model_file_path = os.path.join(definitions.SAVED_MODELS_FOLDER, "chestr-transfer-cnn-model.weights.layer{}.att{}.epochs{}.best.hdf5".format(layer, attempt, epochs))
+model_testdata_file_path = os.path.join(definitions.SAVED_MODELS_FOLDER, "chestr-transfer-cnn-model.testdata.att{}.epochs{}.npz".format(attempt, epochs))
 
 # Load weights with best validation score
 print("Loading model {} and test data {}...".format(best_model_file_path, model_testdata_file_path))
@@ -56,10 +62,10 @@ for label, t_count, p_count in zip(prediction_labels, 100*np.mean(test_Y, 0), 10
 print ("Accuracy of predictions...")
 round_pred = pred_Y > 0.5
 #print("Label \t Accuracy \t Precision \t Recall \t F1Score")
-print("Label \t\t Accuracy")
+#print("Label \t\t Accuracy")
 for index, label in enumerate(prediction_labels):
     cm = confusion_matrix(test_Y[:,index], round_pred[:, index])
-    print (cm)
+    print ("{}:{}".format(label, cm))
 
 #        100*precision_score(test_Y[:,index], round_pred[:, index]),
 #        100*recall_score(test_Y[:,index], round_pred[:, index]),

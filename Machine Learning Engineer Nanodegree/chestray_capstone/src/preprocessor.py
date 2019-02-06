@@ -40,7 +40,7 @@ class Loader:
             self.prediction_labels = prediction_labels
 
       @staticmethod
-      def PreProcess():
+      def PreProcess(mode = 'grayscale'):
             # Load Configs
             config = Config.GetConfig()
             
@@ -110,21 +110,24 @@ class Loader:
                         train_xray_df,
                         path_column='Image Path',
                         prediction_column='Disease Prediction',
-                        batch_size=config.TrainBatchSize
+                        batch_size=config.TrainBatchSize,
+                        mode=mode
                   )
 
                   val_gen_df = Load_Data_Images_For_DataFrame(
                         val_xray_df,
                         path_column='Image Path',
                         prediction_column='Disease Prediction',
-                        batch_size=config.ValidationBatchSize
+                        batch_size=config.ValidationBatchSize,
+                        mode=mode
                   )
 
                   test_gen_df = Load_Data_Images_For_DataFrame(
                         test_xray_df,
                         path_column='Image Path',
                         prediction_column='Disease Prediction',
-                        batch_size=config.TestBatchSize
+                        batch_size=config.TestBatchSize,
+                        mode=mode
                   )
 
             print ("Data load complete!")
