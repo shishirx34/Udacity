@@ -1,0 +1,135 @@
+Using TensorFlow backend.
+Loading model E:\Udacity\Machine Learning Engineer Nanodegree\chestray_capstone\src\Generated\saved-models\base-mlp-model.weights.nodes16.epochs3.best.hdf5 and test data E:\Udacity\Machine Learning Engineer Nanodegree\chestray_capstone\src\Generated\saved-models\base-mlp-model.testdata.nodes16.epochs3.npz...
+Positive predictions for diseases...
+Cardiomegaly: Tx: 4.20%, Px: 0.00%
+Emphysema: Tx: 3.60%, Px: 0.00%
+Effusion: Tx: 24.60%, Px: 0.00%
+Infiltration: Tx: 33.40%, Px: 0.00%
+Mass: Tx: 8.60%, Px: 100.00%
+Nodule: Tx: 10.20%, Px: 0.00%
+Atelectasis: Tx: 19.00%, Px: 0.00%
+Pneumothorax: Tx: 9.60%, Px: 0.00%
+Pleural_Thickening: Tx: 6.30%, Px: 0.00%
+Pneumonia: Tx: 2.10%, Px: 0.00%
+Fibrosis: Tx: 3.30%, Px: 0.00%
+Edema: Tx: 4.00%, Px: 0.00%
+Consolidation: Tx: 6.70%, Px: 0.00%
+Accuracy of predictions...
+C:\Program Files\Python35\lib\site-packages\sklearn\metrics\classification.py:1143: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples.
+  'precision', 'predicted', average, warn_for)
+              precision    recall  f1-score   support
+
+     Healthy       0.96      1.00      0.98       958
+Cardiomegaly       0.00      0.00      0.00        42
+
+   micro avg       0.96      0.96      0.96      1000
+   macro avg       0.48      0.50      0.49      1000
+weighted avg       0.92      0.96      0.94      1000
+
+              precision    recall  f1-score   support
+
+     Healthy       0.96      1.00      0.98       964
+   Emphysema       0.00      0.00      0.00        36
+
+   micro avg       0.96      0.96      0.96      1000
+   macro avg       0.48      0.50      0.49      1000
+weighted avg       0.93      0.96      0.95      1000
+
+              precision    recall  f1-score   support
+
+     Healthy       0.75      1.00      0.86       754
+    Effusion       0.00      0.00      0.00       246
+
+   micro avg       0.75      0.75      0.75      1000
+   macro avg       0.38      0.50      0.43      1000
+weighted avg       0.57      0.75      0.65      1000
+
+              precision    recall  f1-score   support
+
+     Healthy       0.67      1.00      0.80       666
+Infiltration       0.00      0.00      0.00       334
+
+   micro avg       0.67      0.67      0.67      1000
+   macro avg       0.33      0.50      0.40      1000
+weighted avg       0.44      0.67      0.53      1000
+
+              precision    recall  f1-score   support
+
+     Healthy       0.00      0.00      0.00       914
+        Mass       0.09      1.00      0.16        86
+
+   micro avg       0.09      0.09      0.09      1000
+   macro avg       0.04      0.50      0.08      1000
+weighted avg       0.01      0.09      0.01      1000
+
+              precision    recall  f1-score   support
+
+     Healthy       0.90      1.00      0.95       898
+      Nodule       0.00      0.00      0.00       102
+
+   micro avg       0.90      0.90      0.90      1000
+   macro avg       0.45      0.50      0.47      1000
+weighted avg       0.81      0.90      0.85      1000
+
+              precision    recall  f1-score   support
+
+     Healthy       0.81      1.00      0.90       810
+ Atelectasis       0.00      0.00      0.00       190
+
+   micro avg       0.81      0.81      0.81      1000
+   macro avg       0.41      0.50      0.45      1000
+weighted avg       0.66      0.81      0.72      1000
+
+              precision    recall  f1-score   support
+
+     Healthy       0.90      1.00      0.95       904
+Pneumothorax       0.00      0.00      0.00        96
+
+   micro avg       0.90      0.90      0.90      1000
+   macro avg       0.45      0.50      0.47      1000
+weighted avg       0.82      0.90      0.86      1000
+
+                    precision    recall  f1-score   support
+
+           Healthy       0.94      1.00      0.97       937
+Pleural_Thickening       0.00      0.00      0.00        63
+
+         micro avg       0.94      0.94      0.94      1000
+         macro avg       0.47      0.50      0.48      1000
+      weighted avg       0.88      0.94      0.91      1000
+
+              precision    recall  f1-score   support
+
+     Healthy       0.98      1.00      0.99       979
+   Pneumonia       0.00      0.00      0.00        21
+
+   micro avg       0.98      0.98      0.98      1000
+   macro avg       0.49      0.50      0.49      1000
+weighted avg       0.96      0.98      0.97      1000
+
+              precision    recall  f1-score   support
+
+     Healthy       0.97      1.00      0.98       967
+    Fibrosis       0.00      0.00      0.00        33
+
+   micro avg       0.97      0.97      0.97      1000
+   macro avg       0.48      0.50      0.49      1000
+weighted avg       0.94      0.97      0.95      1000
+
+              precision    recall  f1-score   support
+
+     Healthy       0.96      1.00      0.98       960
+       Edema       0.00      0.00      0.00        40
+
+   micro avg       0.96      0.96      0.96      1000
+   macro avg       0.48      0.50      0.49      1000
+weighted avg       0.92      0.96      0.94      1000
+
+               precision    recall  f1-score   support
+
+      Healthy       0.93      1.00      0.97       933
+Consolidation       0.00      0.00      0.00        67
+
+    micro avg       0.93      0.93      0.93      1000
+    macro avg       0.47      0.50      0.48      1000
+ weighted avg       0.87      0.93      0.90      1000

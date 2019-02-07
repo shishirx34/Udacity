@@ -1,0 +1,64 @@
+Using TensorFlow backend.
+Training model for 15 epochs..
+Loading data...
+Total data loaded:  112120
+Loaded paths for images:  112120
+Total time taken: 0:00:01.451573!
+Total #Disease labels in dataset: 14
+Disease Labels distribution (14) [('Cardiomegaly', 2776), ('Emphysema', 2516), ('Effusion', 13317), ('Hernia', 227), ('Infiltration', 19894), ('Mass', 5782), ('Nodule', 6331), ('Atelectasis', 11559), ('Pneumothorax', 5302), ('Pleural_Thickening', 3385), ('Pneumonia', 1431), ('Fibrosis', 1686), ('Edema', 2303), ('Consolidation', 4667)]
+Cleaned up disease Labels distribution (13) [('Cardiomegaly', 2776), ('Emphysema', 2516), ('Effusion', 13317), ('Infiltration', 19894), ('Mass', 5782), ('Nodule', 6331), ('Atelectasis', 11559), ('Pneumothorax', 5302), ('Pleural_Thickening', 3385), ('Pneumonia', 1431), ('Fibrosis', 1686), ('Edema', 2303), ('Consolidation', 4667)]
+Dataset shape after sampling: (50000, 18)
+Generating disease prediction vector...
+Total time taken: 0:01:01.815087!
+Splitting the data for train and test...
+Training set size: (40000, 19)
+Validation set size: (6000, 19)
+Testing set size: (4000, 19)
+Total time taken: 0:00:00.031256!
+Load images and generate dataframes...
+Found 112120 images belonging to 12 classes.
+Generated data frame with loaded images:  (40000, 19)
+Found 112120 images belonging to 12 classes.
+Generated data frame with loaded images:  (6000, 19)
+Found 112120 images belonging to 12 classes.
+Generated data frame with loaded images:  (4000, 19)
+Total time taken: 0:00:17.840943!
+Data load complete!
+(10, 128, 128, 1)
+(10, 13)
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #
+=================================================================
+conv2d_1 (Conv2D)            (None, 128, 128, 64)      320
+_________________________________________________________________
+conv2d_2 (Conv2D)            (None, 128, 128, 64)      16448
+_________________________________________________________________
+max_pooling2d_1 (MaxPooling2 (None, 64, 64, 64)        0
+_________________________________________________________________
+conv2d_3 (Conv2D)            (None, 64, 64, 128)       32896
+_________________________________________________________________
+conv2d_4 (Conv2D)            (None, 64, 64, 128)       65664
+_________________________________________________________________
+max_pooling2d_2 (MaxPooling2 (None, 32, 32, 128)       0
+_________________________________________________________________
+dropout_1 (Dropout)          (None, 32, 32, 128)       0
+_________________________________________________________________
+conv2d_5 (Conv2D)            (None, 32, 32, 256)       131328
+_________________________________________________________________
+max_pooling2d_3 (MaxPooling2 (None, 16, 16, 256)       0
+_________________________________________________________________
+conv2d_6 (Conv2D)            (None, 16, 16, 256)       262400
+_________________________________________________________________
+global_average_pooling2d_1 ( (None, 256)               0
+_________________________________________________________________
+dense_1 (Dense)              (None, 512)               131584
+_________________________________________________________________
+dropout_2 (Dropout)          (None, 512)               0
+_________________________________________________________________
+dense_2 (Dense)              (None, 13)                6669
+=================================================================
+Total params: 647,309
+Trainable params: 647,309
+Non-trainable params: 0
+_________________________________________________________________
+Started training ChestR CNN model...
