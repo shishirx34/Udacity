@@ -10,10 +10,11 @@ from keras import backend as K
 from keras.preprocessing import image
 from keras.models import Model
 from keras.applications.inception_v3 import InceptionV3
-from keras.layers import Conv2D, GlobalAveragePooling2D, MaxPooling2D, Dense, Dropout, Flatten
-from keras.callbacks import ModelCheckpoint   
+from keras.applications.vgg19 import VGG19
+from keras.layers import Conv2D, GlobalAveragePooling2D, MaxPooling2D, Input, Dense, Dropout, Lambda, Flatten, Activation, BatchNormalization, regularizers, AvgPool2D, multiply
+from keras.callbacks import ModelCheckpoint, ReduceLROnPlateau, EarlyStopping
 from keras.backend.tensorflow_backend import set_session
-from keras.optimizers import SGD
+from keras.optimizers import SGD, Adam
 
 import definitions
 import Utilities.Visuals as Visuals
@@ -35,11 +36,17 @@ def TrainChestR(model,
             verbose = 1,
             save_best_only = True)
 
+        reduceLROnPlat = ReduceLROnPlateau(monitor='val_loss', factor=0.8, patience=10, verbose=1, mode='auto', epsilon=0.0001, cooldown=5, min_lr=0.0001)
+        early = EarlyStopping(monitor="val_loss", 
+                            mode="min", 
+                            patience=10) # probably needs to be more patient, but kaggle time is limited
+        callbacks_list = [checkpointer, early, reduceLROnPlat]
+
         model.fit_generator(train_gen,
             steps_per_epoch = train_X.shape[0],
             epochs = epochs,
             validation_data = val_gen,
-            callbacks = [checkpointer],
+            callbacks = callbacks_list,
             verbose = 2)
 
         print ("Training ChestR InceptionV3 CNN model complete!")
@@ -56,9 +63,8 @@ epochs = int(sys.argv[1])
 
 print ("Training model for {} epochs..".format(epochs))
 
-# InceptionV3 needs image to have 3 channels i.e. RGB channel, since our images are in 
+# InceptionV3/VGG19 needs image to have 3 channels i.e. RGB channel, since our images are in 
 # grayscale this won't work but our ImageDataGenerator can load the images in 'rgb' that could help
-
 loaded_data = Loader.PreProcess(mode='rgb')
 
 train_X, train_Y = next(loaded_data.train_generator)
@@ -67,8 +73,90 @@ print (train_Y.shape)
 
 '''
 Attempt 1: with 128,128 Image size and InceptionV3 ImageNet model transfer learning
+Attempt 2: with 128,128 Image size and InceptionV3 ImageNet model transfer learning
+        - Using Sigmoid activation function for output layer
+Attempt 3: with 128,128 image size and VGG19 ImageNet model transfer learning(with sigmoid activation function)
+Attempt 4: with 128,128 image size and VGG19 model with none weights transfer learning(with sigmoid activation function)
+        - ADAM optimizer
 '''
-attempt = 1
+attempt = 5
+
+# create the base pre-trained model
+#base_model = VGG19(weights='imagenet', include_top=False, input_shape=train_X.shape[1:])
+base_model = VGG19(weights='imagenet', include_top=False, input_shape=train_X.shape[1:])
+base_model.trainable = False
+
+pretrained_features = Input(base_model.get_output_shape_at(0)[1:], name = 'feature_input')
+pretrained_depth = base_model.get_output_shape_at(0)[-1]
+
+batch_features = BatchNormalization()(pretrained_features)
+x = Conv2D(128, kernel_size=(1,1), padding='same', activation='elu')(batch_features)
+x = Conv2D(32, kernel_size=(1,1), padding='same', activation='elu')(x)
+x = Conv2D(16, kernel_size=(1,1), padding='same', activation='elu')(x)
+x = AvgPool2D((2,2), strides=(1,1), padding='same')(x)
+x = Conv2D(1, kernel_size=(1,1), padding='valid', activation='sigmoid')(x)
+fan_out_layer = Conv2D(pretrained_depth, kernel_size = (1,1), padding = 'same', 
+               activation = 'linear', use_bias = False, weights = [np.ones((1, 1, 1, pretrained_depth))])
+fan_out_layer.trainable = False
+x = fan_out_layer(x)
+mask_features = multiply([x, batch_features])
+gap_features = GlobalAveragePooling2D()(mask_features)
+gap_mask = GlobalAveragePooling2D()(x)
+
+# Lets try setting rescaling for attention to certain regions
+gap = Lambda(lambda x: x[0]/x[1], name = 'RescaleGAP')([gap_features, gap_mask])
+gap_dropout = Dropout(0.5)(gap)
+dropout_steps = Dropout(0.5)(Dense(128, activation='elu')(gap_dropout))
+predictions = Dense(len(loaded_data.prediction_labels), activation='sigmoid')(dropout_steps)
+
+# lets not freeze the layers and see what happens since we have a huge number of images to train data on...
+highlight_model = Model(inputs=[pretrained_features], outputs=[predictions], name='highlight_model')
+highlight_model.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['binary_accuracy'])
+highlight_model.summary()
+
+chestr_transfer_cnn_model = Sequential(name="complete_model")
+base_model.trainable = False
+chestr_transfer_cnn_model.add(base_model)
+chestr_transfer_cnn_model.add(highlight_model)
+chestr_transfer_cnn_model.compile(optimizer=Adam(lr=0.001), loss='binary_crossentropy', metrics=['binary_accuracy'])
+chestr_transfer_cnn_model.summary()
+
+# train the model on the new data for a few epochs
+TrainChestR(model = chestr_transfer_cnn_model, 
+    training_layer = "all", 
+    train_gen = loaded_data.train_generator,
+    train_X = train_X,
+    val_gen = loaded_data.val_generator,
+    attempt = attempt, 
+    epochs = epochs)
+
+'''
+attempt = 4
+
+# create the base pre-trained model
+#base_model = VGG19(weights='imagenet', include_top=False, input_shape=train_X.shape[1:])
+base_model = VGG19(weights=None, include_top=False, input_shape=train_X.shape[1:])
+
+# add a global spatial average pooling layer
+x = base_model.output
+x = GlobalAveragePooling2D()(x)
+x = Dropout(0.4)(x)
+# let's add a fully-connected layer
+x = Dense(1024, activation='relu')(x)
+x = BatchNormalization()(x)
+x = Activation('relu')(x)
+x = Dropout(0.25)(x)
+
+predictions = Dense(len(loaded_data.prediction_labels), activation='sigmoid')(x)
+
+# lets not freeze the layers and see what happens since we have a huge number of images to train data on...
+chestr_transfer_cnn_model = Model(inputs=base_model.input, outputs=predictions)
+#chestr_transfer_cnn_model.compile(optimizer=SGD(lr=0.0001, momentum=0.9), loss='categorical_crossentropy')
+chestr_transfer_cnn_model.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['binary_accuracy', 'mae'])
+chestr_transfer_cnn_model.summary()
+'''
+'''
+attempt = 2
 
 # create the base pre-trained model
 base_model = InceptionV3(weights='imagenet', include_top=False, input_shape=train_X.shape[1:])
@@ -80,8 +168,8 @@ x = GlobalAveragePooling2D()(x)
 # let's add a fully-connected layer
 x = Dense(1024, activation='relu')(x)
 # and a logistic layer -- let's say we have 200 classes
-predictions = Dense(len(loaded_data.prediction_labels), activation='softmax')(x)
 
+predictions = Dense(len(loaded_data.prediction_labels), activation='sigmoid')(x)
 # this is the model we will train
 chestr_transfer_cnn_model = Model(inputs=base_model.input, outputs=predictions)
 
@@ -133,6 +221,7 @@ TrainChestR(model = chestr_transfer_cnn_model,
     val_gen = loaded_data.val_generator,
     attempt = attempt, 
     epochs = epochs)
+'''
 
 # Load up the testing dataset
 test_X, test_Y = next(loaded_data.test_generator)

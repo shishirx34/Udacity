@@ -7,9 +7,9 @@ config = Config.GetConfig()
 IMAGE_SIZE = (config.ImageSizeWidth, config.ImageSizeHeight)
 
 image_data_generator = ImageDataGenerator(
-    samplewise_center=True, 
-    samplewise_std_normalization=True,
-    rotation_range = 4,             # minor rotation twists
+    samplewise_center=False,
+    samplewise_std_normalization=False,
+    rotation_range = 3,             # minor rotation twists
     width_shift_range = 0.1,
     height_shift_range = 0.1,
     brightness_range = [0.75, 1.25],   # 75% to 125% brightness
