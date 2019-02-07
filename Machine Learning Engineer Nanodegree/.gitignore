@@ -2,3 +2,7 @@ dog-project/*
 *.pyc
 */src/Generated/saved-models/*
 .vscode
+*/src/**/**/*.aux
+*/src/**/**/*.fdb_latexmk
+*/src/**/**/*.fls
+*/src/**/**/*.gz
