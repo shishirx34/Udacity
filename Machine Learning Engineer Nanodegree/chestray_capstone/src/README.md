@@ -8,7 +8,7 @@ These are the software specifications based on which this source code was develo
 - Tensorflow GPU 1.5
 - CUDA Toolkit 9.0
 - CuDNN 7.0.4
-- Windows 10
+- Windows 10 - Hosted on Azure VM - NC6 Tier with 7.5Gb Nvidia Tesla M60 Graphics card.
 - See the python-modules.txt to see the installed modules for running this project.
 
 This data is based off of NIH Chest X-Ray dataset. This data is required to train and test the developed models in this project. The dataset is available to be downloaded on  [Kaggle's NIH Chest X-RAY dataset](https://www.kaggle.com/nih-chest-xrays/data/downloads/data.zip/3). Please download and extract all the images folder in following format to ensure correct data load for running models.
@@ -35,6 +35,10 @@ python data-exploration.py
 ```
 
 This python script will generate the relevant images exploring the data from the dataset in `src\Generated\data-exploration-images` folder.
+
+### Preprocessing
+
+`preprocessor.py` contains the code for pre-processing the data before the model is trained. In this script we get rid of all the features apart from the image file names. Also, as part of preprocessing stage we load the image data and sampled by weights.
 
 ### Training Models
 
