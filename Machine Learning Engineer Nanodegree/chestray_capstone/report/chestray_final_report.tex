@@ -17,26 +17,42 @@
  
     \maketitle 
 
-    \section{Project Overview}
-
+    \section{Definition}
+    \subsection{Project Overview}
     In medical industry chest x-ray is the most commonly performed diagnostic x-ray examination. It produces images of the heart, lungs, airways, blood vessels and the bones of the spine and chest. An x-ray(radiograph) is a non-invasive medical way for physicians to diagnose and treat medical conditions. Performing such an x-ray involves exposing the the chest to a small dose of ionizing radiation to produce the pictures of the body. X-rays are the most frequently used form of medical imaging. 
     
     The chest x-ray is commonly the first imaging test used to help diagnose symptoms such as chest pain, breathing difficulties, bad or consistent cough etc. Physicians will use these imaging to diagnose or monitor treatments for conditions such as pneumonia, heart problems, lung cancer, fluid or air collection in lungs etc. Although this isn't necessarily a conclusive diagnosis for all kind of diseases it is the first tool of diagnosing any possible illnesses for the above said symptoms.\cite{xray-details} 
 
     This project will showcase a neural network which will provide the predictions on chest X-ray images with some certainty better than random guessing. 
 
-    \section{Problem Statement}
+    \subsection{Problem Statement}
     Chest X-ray exams are one of the most frequent and cost-effective medical imaging examinations available. However, clinical diagnosis of a chest X-ray can be challenging and sometimes more difficult than diagnosis via chest CT.\cite{nih-kaggle}
     
     Reading and diagnosing chest x-ray images may be a relatively simple task for radiologists but, in fact, it is a complex reasoning problem which often requires careful observation and knowledge of anatomical principles, physiology and pathology. Such factors increase the difficulty of developing a consistent and automated technique for reading chest X-ray images while simultaneously considering all common thoracic diseases.\cite{nih-gov-xray-release}
 
     There is a need to develop an automated technique that could analyze a given chest x-ray and which could predict the possible common thoracic diseases with some certainty. Also, it should aid radiologists or physicians by highlighting the suspected common areas of disease in order to pay close attention to certain areas of a chest x-ray, so as to not misdiagnose these diseases. This automated technique could benefit patients in developing countries who do not have access to the radiologists to read these x-rays.
-    One such success metric of such a system would be the ability to predict disease outcome with some certainty than say, random prediction.
 
-    \section{Data Exploration and Visualization}
-    If a dataset is present, features and calculated statistics relevant to the problem have been reported and discussed, along with a sampling of the data. In lieu of a dataset, a thorough description of the input space or input data has been made. Abnormalities or characteristics about the data or input that need to be addressed have been identified.
-    
-    To that effect National Institutes of Health has released over 112,000 chest X-ray images with the labeled data, 15 labels: 14 diseases, 1 no findings.\cite{nih-gov-xray-release} we will be using this data to build a convolutional neural network for disease prediction from a chest X-ray image. In order to build the neural network the following data analysis was executed on the above said data.
+    The general approach or strategy on getting the solution will be as below.
+    \begin{itemize}
+        \item The dataset for chest xrays with disease labels will be imported and explored for feature sets. This would involve doing data exploration as well as data preprocessing to build formatted feature set for trainig the data.
+        \item A naive training model will be implemented to see how well we can classify or predict the disease labels. 
+        \item Subsequently we will develop a well trained model with fine tuning the parameters. Further more any kind of possible refinements will be applied with existing art to further improve the disease predictions on the xray images.
+        \item The developed solution will be measured for success with below metrics.
+    \end{itemize}
+
+    \subsection{Metrics}
+    One such success metric of such a system would be the ability to predict disease outcome with some certainty than say, random prediction. The implication of these predictions is that if we predict negative result for a person with disease it will be harmful, thus we want to be cautious and be \textit{sensitive} for our predictions. Since we have multilabel classification task we will measure this performance by using Receiver Operating Curve (ROC) with Area Under the Curve (AUC) metrics. The ROC curve is a graphical plot which illustrates the performance of a binary classifier system as its discrimination threshold is varied. It is created by plotting the fraction of true positives out of all the positives(TPR = True Positive Rate) vs the fraction of false positives out of the negatives (FPR = false positive rate) at various threshold settings. TPR is also known as sensitivity and FPR is one minus the specificity or true negative rate.\cite{roc-metric}\cite{auc}
+
+    \begin{equation}
+        FPR = \frac{FP}{FP + TN}, TPR = \frac{TP}{TP + FN}
+    \end{equation}
+    \begin{equation}
+            AUC = \int_{x=0}^{1} TPR(FPR^{-1}(x))dx
+    \end{equation}
+
+    \section{Analysis}
+    \subsection{Data Exploration and Visualization}
+    National Institutes of Health has released over 112,000 chest X-ray images with the labeled data, 15 labels: 14 diseases, 1 no findings.\cite{nih-gov-xray-release} we will be using this data to build a convolutional neural network for disease prediction from a chest X-ray image. In order to build the neural network the following data analysis was executed on the above said data.
 
     \begin{figure}
         \includegraphics[width=\linewidth]{./images/labels_distribution.jpg}
@@ -79,8 +95,31 @@
     \end{figure}
 
     \section{Algorithms and Techniques}
-    Given the nature of the data, we have a lot of labeled images the general technique to approach such a problem is developing a Deep Neural Network model which would learn the pattern of the diseases in the provided images. Once we develop this learned model it should be able to predict the disease in the chest x-ray images. To that effect the project takes an iterative approach on building the convolutional neural network for disease prediction. In the following subsections we discuss the data preprocessing followed by a benchmark model with analyzed results. Subsequently we will see the development of a convolutional neural network which is further more refined by the applicaitons of transfer learning in deep neural networks. The metrics used for analysis are Receive Operating Curve(ROC) and Area Under the Curve(AUC) for different models. This metric along with the \textit{Precision, Recall and F1-Score} will provide the comparison of the performance of these models. Since the problem statement is to develop a disease predictor and the inherent bias in the data with high number of negative results, ROC is the most appropriate metric to compare the performance characteristics for these models. Finally we see the comparison and evaluation of our most refined model for disease prediction.
-    
+    Essentially the problem statement boils down to recognizing a pattern in image for each of the labeled diseases. This in fact is a image classification problem. The general technique to approach such a problem is developing a Deep Neural Network model which would learn the pattern of the diseases in the provided images. The deep neural network has thousands of nodes and training parameters which will take forever to train the model, the improvement is done with the localization of pixels in the image by using Convolutional approach based on pooling of filters. The figure \ref{fig:cnn-process} shows the approach the CNN takes in achieving this task.
+    \begin{figure}
+        \includegraphics[width=\linewidth]{./images/convolutional-neural-net-process-3.png}
+        \caption{CNN Process}
+        \label{fig:cnn-process}
+    \end{figure}
+    \begin{itemize}
+        \item The real input image that is scanned for features. The filter that passes over it is the light rectangle.
+        \item The Activation maps are arranged in a stack on the top of one another, one for each filter you use. The larger rectangle is 1 patch to be downsampled.
+        \item The activation maps condensed via downsampling.
+        \item A new group of activation maps generated by passing the filters over the stack that is downsampled first.
+        \item The second downsampling – which condenses the second group of activation maps.
+        \item A fully connected layer that designates output with 1 label per node.
+    \end{itemize}
+    The convolutional layer is generated and trained as follows:
+    \begin{itemize}
+        \item At first, the image, xray, is broken down into a series of overlapping, lets say, 2*2 pixel tiles.
+        \item After that, we run each of these tiles via a simple, single-layer neural network by keeping the weights unaltered. This will change the collection of tiles into an array. As we kept each of the images small(2*2 in this case), the neural network needed to process them stays manageable and small.
+        \item Then, the output values will be taken and arranged in an array that numerically represents each area’s content in the iamge, with the axes representing color, width and height channels. So, for each tile, we would have a 2*2*3 representation in this case.
+        \item The next step is the pooling layer. It takes these 3 or 4 dimensional arrays and applies a downsampling function together with spatial dimensions. The result is a pooled array that contains only the image portions that are important while discarding the rest, which minimizes the computations that are needed to be done while also avoiding the overfitting problem.
+        \item The downsampled array is taken and utilized as the regular fully connected neural network’s input. Since the input’s size has been reduced dramatically using pooling and convolution, we must now have something that a normal network will be able to handle while still preserving the most significant portions of data. The final step’s output will represent how confident the system is that we have an image with a certain disease that we are trying to predict.
+    \end{itemize}
+    The convolution, pooling and downsampling is the most common way to generate and train a CNN network for huge data sizes. The other common technique used for training a CNN is usage of transfer learning from a pretrained models to new prediction models. These pretrained models can be loaded with their pre-trained model and retrained if required for our dataset. The retraining could involve freezing certain layers during training purpose to effectively explore the patterns in the images.
+
+    \section{Mehtodology}
     \subsection{Data Preprocessing}
     As per the data analysis done in the above section, we get rid of all the features other than the image names and indexes. This is done as part of our \textit{Preprocessing} step.\cite{github-proj}. Following preprocessing is performed on this data:
     \begin{itemize}
@@ -226,8 +265,6 @@
         Nontrainable params: 0  \\ 
         =================================================================
     \end{minipage}}
-    
-    
 
     Note: The source code for this training model can be found in \textit{chestr-cnn-model.py}\cite{github-proj}
 
@@ -323,7 +360,8 @@
         =================================================================
     \end{minipage}}
 
-    \section{Model Evaluation and Validation}
+    \section{Results}
+    \subsection{Model Evaluation and Validation}
     The figure \ref{fig:cnn-roc-auc} ROC - auc metric shows the values for the disease labels ranging from 0.43 to 0.57. It means this CNN model is able to atleast make predictions with some certainty, positive or negative or both. Higher value of AUC means the disease can be predicted with more confidence or higher probabilities. Also, as can be seen from the ROC, for some of the disease vectors the AUC is 0.5 and ROC is a linear line, same as that of the benchmark model, which means the model won't be able to perform predictions any better than the benchmark model i.e. random guess.
 
     \begin{figure}
@@ -388,13 +426,23 @@
         \end{tabular}
     \end{center}
 
-    \section{Justification and Improvements}
-    As can be seen from the figures \ref{fig:base-mlp-roc} \ref{fig:cnn-roc-auc} and \ref{fig:cnn-vgg19-roc-auc}, the non-transfer learning CNN model performs much better than our benchmark model. In fact it conservatively predicts the diseases, which though not satisfactory for any real life application is still on the right path to be experimented and improved. The fine tuning of the CNN model with the transfer learning was a failure. There needs to be more analysis done for figuring out why the application of transfer learning did not work. It is possible to seggregate the data and build individual models to predict the disease probability rather than counting and trying to predict these diseases together. 
+    \subsection{Justification}
+    As can be seen from the figures \ref{fig:base-mlp-roc} \ref{fig:cnn-roc-auc} and \ref{fig:cnn-vgg19-roc-auc}, the non-transfer learning CNN model performs much better than our benchmark model. In fact it conservatively predicts the diseases, which though not satisfactory for any real life application is still on the right path to be experimented and improved. 
+
+    \section{Conclusion}
+
+    \subsection{Free-Form Visualization}
+    Figure \ref{fig:cnn-samples-predictions} and \ref{fig:cnn-roc-auc} show that the trained model was able to learn the base pattern with very minimal approach. There needs to be fine tuning to increase the metrics for successful predictions. In the sample images it can be seen that CNN is predicting the disease with about 25\%, which is much better than randomly classifying which in best case scenario would be able to predict a disease with 7.69\% certainty(1 in 13 chances to correctly predict the disease). This seems like the correct approach in finding the disease pattern in the x-rays.
+
+    \subsection{Reflection}
+    This has been quite a challenging problem, because it was the first time I had to deal with building a trainig model from scratch. The requirement gathering and challenges have been interesting. Quite a lot of research went into building a simple model itself and applications of machine learning in such fields have been eye opening. I would say this project although not a resounding success in implementing a very well predicting model provided enormous learning opportunity with regards to the Deep neural networks and the APIs for developing such networks. Also, most challenging part was also to get the Tensorflow running on the GPU, but worth the effort for saving on training time. 
+
+    \subsection{Improvement}
+    The fine tuning of the CNN model with the transfer learning was a failure. There needs to be more analysis done for figuring out why the application of transfer learning did not work. It is possible to seggregate the data and build individual models to predict the disease probability rather than counting and trying to predict these diseases together.
 
     There is a scope of improvement in training the pretrained models. There are a few existing kernels that can be drawn on for some inspiration to improve the predictions on these models.\cite{cardio-kaggle}
 
-    \section{Reflection}
-    This has been quite a challenging problem, because it was the first time I had to deal with building a trainig model from scratch. The requirement gathering and challenges have been interesting. Quite a lot of research went into building a simple model itself and applications of machine learning in such fields have been eye opening. I would say this project although not a resounding success in implementing a very well predicting model provided enormous learning opportunity with regards to the Deep neural networks and the APIs for developing such networks. Also, most challenging part was also to get the Tensorflow running on the GPU, but worth the effort for saving on training time. 
+    It would be worth a try to bump up the image size used for training, 128 X 128. If we try to train these models with full size images 1024 X 1024 it is likely that the pattern for diseases can be learnt much better by the model. Usually the disease pattern mass is very small in the images, upon downsampling the image it is likely that we are losing this information thereby unable to train the models well. The main problem with training full size image was the hardware available did not support these values. There needs to be further analysis on how to train full size images which might help in predictions.
 
     \begin{thebibliography}{999}
 
@@ -406,6 +454,9 @@
         \bibitem{simple-xray-cnn} \url{https://www.kaggle.com/kmader/train-simple-xray-cnn}
         \bibitem{github-proj} \url{https://github.com/shishirx34/Udacity/tree/master/Machine%20Learning%20Engineer%20Nanodegree/chestray_capstone/src}
         \bibitem{cardio-kaggle} \url{https://www.kaggle.com/kmader/cardiomegaly-pretrained-vgg16}
+        \bibitem{roc} \url{https://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_auc_score.html#sklearn.metrics.roc_auc_score}
+        \bibitem{roc-metric} \url{https://scikit-learn.org/stable/modules/model_evaluation.html#roc-metrics}
+        \bibitem{auc} \url{https://en.wikipedia.org/wiki/Receiver_operating_characteristic}
 
     \end{thebibliography}
 
